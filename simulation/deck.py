@@ -2,6 +2,10 @@ from random import shuffle
 from card import Card
 
 class Deck():
+    """
+    Represents a deck of cards in blackJack. Can be initialized with multiple decks.
+    Cards are shuffled upon initialization.
+    """
     def __init__(self, num_decks=1):
         self.num_decks = num_decks
         self.cards = []
@@ -9,6 +13,7 @@ class Deck():
             for rank in ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']:
                 for suit in ['Hearts', 'Diamonds', 'Clubs', 'Spades']:
                     self.cards.append(Card(rank, suit))
+        self.shuffle()
 
         assert len(self.cards) == 52 * num_decks, "Incorrect number of cards in the deck"
 

@@ -1,4 +1,4 @@
-from deck import Deck
+from simulation.deck import Deck
 
 if __name__ == "__main__":
    test_deck = Deck(num_decks=1)
