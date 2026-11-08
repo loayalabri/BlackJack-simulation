@@ -16,6 +16,23 @@ class Hand:
     def get_value(self):
         return self.value
 
+    def get_cards(self):
+        return self.cards
+
     def isSoft(self):
         return any(card.rank == "A" for card in self.cards) and self.value <= 21
+
+class DealerHand(Hand):
+
+    def __init__(self):
+        super().__init__()
+        self.uppercard = None
+
+    def add_card(self, card: Card):
+        super().add_card(card)
+        if len(self.cards) == 1:
+            self.uppercard = card
+
+    def get_uppercard(self):
+        return self.uppercard
 

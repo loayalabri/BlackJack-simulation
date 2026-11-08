@@ -32,4 +32,19 @@ class HitTill17Strategy(Strategy):
 
 class BasicStrategy(Strategy):
     def get_action(self, player_hand, dealer_hand):
-        pass 
+        player_value = player_hand.get_value()
+        dealer_value = dealer_hand.get_value()
+        if player_value <= 11:
+            return 'Hit'
+        if player_hand.isSoft():
+            if player_value <= 17:
+                return 'Hit'
+            if player_value == 18:
+                pass # hit if dealer has (9, 10, Ace); stand otherwise.
+            if player_value >= 19:
+                return 'Stand'
+
+
+class HighLowStrategy(Strategy):
+    pass 
+        
