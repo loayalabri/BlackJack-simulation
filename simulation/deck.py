@@ -1,9 +1,8 @@
 from random import shuffle
 from card import Card
-
-class Deck():
+class Shoe():
     """
-    Represents a deck of cards in blackJack. Can be initialized with multiple decks.
+    Can be initialized with multiple decks.
     Cards are shuffled upon initialization.
     """
     def __init__(self, num_decks=1):

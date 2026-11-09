@@ -2,7 +2,8 @@
 
 
 from abc import ABC,  abstractmethod
-from hand import Hand
+from hand import Hand, DealerHand
+
 
 
 class Strategy(ABC):
@@ -10,17 +11,12 @@ class Strategy(ABC):
     Abstract base class for different blackjack strategies.
     """
     @abstractmethod
-    def get_action(self, player_hand: Hand, dealer_hand: Hand):
+    def get_action(self, player_hand: Hand, dealer_hand: DealerHand):
         """
         Get the recommended action based on the player's hand value and dealer's upcard value.
+        Prerequisites: neither hand is busted, nor blackjack.
         """
         pass
-
-    def get_bet(self, bet_amount: float):
-        """
-        Get the bet amount based on the minimum bet.
-        """
-        return bet_amount
     
 
 class HitTill17Strategy(Strategy):
@@ -31,20 +27,41 @@ class HitTill17Strategy(Strategy):
             return 'Stand'
 
 class BasicStrategy(Strategy):
-    def get_action(self, player_hand, dealer_hand):
+    def get_action(self, player_hand, dealer_hand):       
         player_value = player_hand.get_value()
-        dealer_value = dealer_hand.get_value()
-        if player_value <= 11:
-            return 'Hit'
+        dealer_upcard = dealer_hand.get_uppercard().get_value()
         if player_hand.isSoft():
             if player_value <= 17:
                 return 'Hit'
-            if player_value == 18:
-                pass # hit if dealer has (9, 10, Ace); stand otherwise.
-            if player_value >= 19:
+            elif player_value == 18:
+                if dealer_upcard in [9, 10, 11]:
+                    return 'Hit'
+                else:
+                    return 'Stand'
+            else:
                 return 'Stand'
+        else:
+            if player_value <= 11:
+                return 'Hit'
+            elif player_value == 12:
+                if dealer_upcard in [4, 5, 6]:
+                    return 'Stand'
+                else:
+                    return 'Hit'
+            elif 13 <= player_value <= 16:
+                if dealer_upcard in [2, 3, 4, 5, 6]:
+                    return 'Stand'
+                else:
+                    return 'Hit'
+            else:
+                return 'Stand'  
+        
+        
 
 
 class HighLowStrategy(Strategy):
+    def __init__(self):
+        self.count = 0
+        
     pass 
         
