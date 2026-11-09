@@ -50,7 +50,6 @@ class Hand:
 class DealerHand(Hand):
     def __init__(self, hit_on_soft_17=True):
         super().__init__()
-        self.uppercard = None
         self.hit_on_soft_17 = hit_on_soft_17
 
     @override
@@ -60,7 +59,7 @@ class DealerHand(Hand):
             self.uppercard = card
 
     def get_uppercard(self):
-        return self.uppercard
+        return self.cards[0] if self.cards else None
 
     def should_hit(self):
         total_value = self.get_value()
