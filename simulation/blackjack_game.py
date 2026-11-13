@@ -5,7 +5,7 @@ from strategy import HitTill17Strategy, BasicStrategy, HighLowStrategy
  
 class BlackjackGame:
     def __init__(self, num_decks=1, hit_on_soft_17=True, strategy="Basic"):
-        assert strategy in ["HitTill17", "Basic", "HighLow"], f"Invalid strategy. {strategy}"
+        assert strategy in ["HitTill17", "Basic", "Counting"], f"Invalid strategy. {strategy}"
         self.num_decks = num_decks
         self.shoe = Shoe(num_decks)
         self.dealer_behaviour = "HitOnSoft17" if hit_on_soft_17 else "StandOnSoft17"
@@ -25,11 +25,18 @@ class BlackjackGame:
         self.player_hand.clear()
         self.dealer_hand.clear()
         self.bet = self.strategy.get_bet()
+        self.net_outcome = 0
         
-        self.player_hand.add_card(self.shoe.deal_card())
-        self.dealer_hand.add_card(self.shoe.deal_card())
-        self.player_hand.add_card(self.shoe.deal_card())
-        self.dealer_hand.add_card(self.shoe.deal_card())
+        self.deal_to_hand(self.player_hand)
+        self.deal_to_hand(self.dealer_hand)
+        self.deal_to_hand(self.player_hand)
+        self.deal_to_hand(self.dealer_hand, visible=False)
+
+    def deal_to_hand(self, hand: Hand, visible=True):
+        card = self.shoe.deal_card()
+        hand.add_card(card)
+        if visible:
+            self.strategy.update_count(card)
 
 
     def play_turn(self):
@@ -54,18 +61,19 @@ class BlackjackGame:
             return self.get_results("Loss")
 
         while self.strategy.get_action(self.player_hand, self.dealer_hand) == 'Hit':
-            self.player_hand.add_card(self.shoe.deal_card())
+            self.deal_to_hand(self.player_hand)
             if self.player_hand.is_busted():
                 self.net_outcome =  - self.bet
                 print("Player Busted!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
                 return self.get_results("Loss")
-
+            
+        self.strategy.update_count(self.dealer_hand.get_cards()[1])
         while self.dealer_hand.should_hit():
-            self.dealer_hand.add_card(self.shoe.deal_card())
+            self.deal_to_hand(self.dealer_hand)
             if self.dealer_hand.is_busted():
-                self.net_outcome = 2 * self.bet
+                self.net_outcome = self.bet
                 print("Dealer busted, player wins!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
@@ -103,9 +111,13 @@ class BlackjackGame:
                 }
 
     def set_shoe(self, shoe: Shoe):
+        self.num_decks = shoe.num_decks
         self.shoe = shoe
 
     def set_strategy(self, strategy):
+        assert strategy in ["HitTill17", "Basic", "Counting"], f"Invalid strategy. {strategy}"
+
+        self.strategy_name = strategy
         if strategy == "HitTill17":
             self.strategy = HitTill17Strategy()
         elif strategy == "Basic":

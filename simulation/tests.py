@@ -20,7 +20,7 @@ def test_play_turn():
 
     game.set_dealer_hand(dealer)
     game.set_player_hand(player)
-    game.play_turn()
+    print(game.play_turn())
 
 if __name__ == "__main__":
     test_play_turn()

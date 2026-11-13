@@ -5,6 +5,7 @@ from abc import ABC,  abstractmethod
 
 from overrides import override
 from hand import Hand, DealerHand
+from card import Card
 
 
 
@@ -88,7 +89,7 @@ class HighLowStrategy(BasicStrategy):
         super().__init__()
         self.count = 0
         
-    def update_count(self, card):
+    def update_count(self, card: Card):
         self.count += card.get_count_value()
 
     @override
