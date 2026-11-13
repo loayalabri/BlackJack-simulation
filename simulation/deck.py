@@ -10,11 +10,7 @@ class Shoe():
     def __init__(self, num_decks=1):
         self.num_decks = num_decks
         self.cards = []
-        for _ in range(num_decks):
-            for rank in self.RANKS:
-                for suit in self.SUITS:
-                    self.cards.append(Card(rank, suit))
-        self.shuffle()
+        self.reset()
         assert len(self.cards) == 52 * num_decks, "Incorrect number of cards in the deck"
 
     def deal_card(self):
@@ -29,8 +25,9 @@ class Shoe():
         return self.penetration() >= threshold
 
     def reset(self):
+        print("Reshufling ...")
         self.cards = []
-        for _ in self.num_decks:
+        for _ in range(self.num_decks):
             for rank in self.RANKS:
                 for suit in self.SUITS:
                     self.cards.append(Card(rank, suit))
@@ -38,7 +35,6 @@ class Shoe():
 
     def shuffle(self):
             shuffle(self.cards)
-
 
     def __len__(self):
         return len(self.cards)
