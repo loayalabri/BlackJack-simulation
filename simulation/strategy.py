@@ -2,6 +2,8 @@
 
 
 from abc import ABC,  abstractmethod
+
+from overrides import override
 from hand import Hand, DealerHand
 
 
@@ -36,6 +38,15 @@ class HitTill17Strategy(Strategy):
             return 'Stand'
 
 class BasicStrategy(Strategy):
+    """
+    ○ Total of 11 or less, hit.
+    ○ Total of 12 and dealer upcard 4-6, stand; otherwise hit.
+    ○ Total of 13-16 and dealer upcard 2-6, stand; otherwise hit.
+    ○ Total of hard 17 or higher, stand.
+    ○ Total of Soft 17 or less, hit.
+    ○ Total of Soft 18, hit if dealer has (9, 10, Ace); stand otherwise.
+    ○ Total of Soft 19 or higher, stand
+    """
     def get_action(self, player_hand, dealer_hand):       
         player_value = player_hand.get_value()
         dealer_upcard = dealer_hand.get_uppercard().get_value()
@@ -67,6 +78,12 @@ class BasicStrategy(Strategy):
         
 
 class HighLowStrategy(BasicStrategy):
+    """
+    follows basic strategy while keeping a count
+    (+1 for cards 2-6, -1 for cards 10-Ace, and 0 for all other cards).
+    Then, bet $0.50 if the count is at or below +1 and $1.50 if the 
+    count is above +1.
+    """
     def __init__(self):
         super().__init__()
         self.count = 0
@@ -77,6 +94,7 @@ class HighLowStrategy(BasicStrategy):
     def get_action(self, player_hand, dealer_hand):
         pass
 
+    @override
     def get_bet(self):
         if self.count > 1:
             return 1.5

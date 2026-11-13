@@ -48,6 +48,9 @@ class Hand:
     
 
 class DealerHand(Hand):
+    """
+    Extends Hand, represents the dealer's hand.
+    """
     def __init__(self, hit_on_soft_17=True):
         super().__init__()
         self.hit_on_soft_17 = hit_on_soft_17
