@@ -21,128 +21,85 @@ class BlackjackGame:
         self.bet = 0
         self.net_outcome = 0
 
-
-    def play_turn(self):
+    def deal_init_cards(self):
         self.player_hand.clear()
         self.dealer_hand.clear()
         self.bet = self.strategy.get_bet()
+        
+        self.player_hand.add_card(self.shoe.deal_card())
+        self.dealer_hand.add_card(self.shoe.deal_card())
+        self.player_hand.add_card(self.shoe.deal_card())
+        self.dealer_hand.add_card(self.shoe.deal_card())
 
-        self.player_hand.add_card(self.shoe.deal_card())
-        self.dealer_hand.add_card(self.shoe.deal_card())
-        self.player_hand.add_card(self.shoe.deal_card())
-        self.dealer_hand.add_card(self.shoe.deal_card())
-        print(f"Initial Player hand: {self.player_hand}")
+
+    def play_turn(self):
         if self.player_hand.is_blackjack() and self.dealer_hand.is_blackjack():
             print("Tie! BlackJack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
-            return {
-                "num_decks": self.num_decks,
-                "strategy": self.strategy_name,
-                "dealer_bahaviour": self. dealer_behaviour,
-                "bet": self.bet,
-                "net_outcome": self.net_outcome,
-                "outcome": "Tie"
-                }
+            return self.get_results("Tie")
+        
         elif self.player_hand.is_blackjack():
-            self.net_outcome += self.bet + 1.5 * self.bet
+            self.net_outcome = 1.5 * self.bet
             print("Player wins with blackjack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
-            return {
-                "num_decks": self.num_decks,
-                "strategy": self.strategy_name,
-                "dealer_bahaviour": self. dealer_behaviour,
-                "bet": self.bet,
-                "net_outcome": self.net_outcome,
-                "outcome": "Win"
-                }  
+            return self.get_results("Win")
+        
         elif self.dealer_hand.is_blackjack():
-            self.net_outcome -= self.bet
+            self.net_outcome = - self.bet
             print("Dealer wins with blackjack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
-            return {
-                "num_decks": self.num_decks,
-                "strategy": self.strategy_name,
-                "dealer_bahaviour": self. dealer_behaviour,
-                "bet": self.bet,
-                "net_outcome": self.net_outcome,
-                "outcome": "Loss"
-                }
-            
+            return self.get_results("Loss")
 
         while self.strategy.get_action(self.player_hand, self.dealer_hand) == 'Hit':
             self.player_hand.add_card(self.shoe.deal_card())
-            self.bet += self.strategy.get_bet()
             if self.player_hand.is_busted():
-                self.net_outcome -= self.bet
+                self.net_outcome =  - self.bet
                 print("Player Busted!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
-                return {
-                    "num_decks": self.num_decks,
-                    "strategy": self.strategy_name,
-                    "dealer_bahaviour": self. dealer_behaviour,
-                    "bet": self.bet,
-                    "net_outcome": self.net_outcome,
-                    "outcome": "Loss"
-                    }
+                return self.get_results("Loss")
 
         while self.dealer_hand.should_hit():
             self.dealer_hand.add_card(self.shoe.deal_card())
             if self.dealer_hand.is_busted():
-                self.net_outcome += 2 * self.bet
+                self.net_outcome = 2 * self.bet
                 print("Dealer busted, player wins!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
-                return {
-                    "num_decks": self.num_decks,
-                    "strategy": self.strategy_name,
-                    "dealer_bahaviour": self. dealer_behaviour,
-                    "bet": self.bet,
-                    "net_outcome": self.net_outcome,
-                    "outcome": "Loss"
-                    }
+                return self.get_results("Win")
 
         if self.player_hand.get_value() > self.dealer_hand.get_value():
-            self.net_outcome += 2 * self.bet
+            self.net_outcome = self.bet
             print("Player Wins with value!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
-            return {
-                "num_decks": self.num_decks,
-                "strategy": self.strategy_name,
-                "dealer_bahaviour": self. dealer_behaviour,
-                "bet": self.bet,
-                "net_outcome": self.net_outcome,
-                "outcome": "Win"
-                }
+            return self.get_results("Win")
+        
         elif self.player_hand.get_value() == self.dealer_hand.get_value():
             self.net_outcome = 0
             print("Tie")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
-            return {
-                "num_decks": self.num_decks,
-                "strategy": self.strategy_name,
-                "dealer_bahaviour": self. dealer_behaviour,
-                "bet": self.bet,
-                "net_outcome": self.net_outcome,
-                "outcome": "Tie"
-                }
+            return self.get_results("Tie")
+        
         else:
-            self.net_outcome -= self.bet
+            self.net_outcome = - self.bet
             print("Player Losses with value!!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
-            return {
+            return self.get_results("Loss")
+
+    def get_results(self, outcome):
+        return {
                 "num_decks": self.num_decks,
                 "strategy": self.strategy_name,
                 "dealer_bahaviour": self. dealer_behaviour,
                 "bet": self.bet,
                 "net_outcome": self.net_outcome,
-                "outcome": "Loss"
+                "outcome": outcome
                 }
 
     def set_shoe(self, shoe: Shoe):

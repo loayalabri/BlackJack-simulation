@@ -91,9 +91,6 @@ class HighLowStrategy(BasicStrategy):
     def update_count(self, card):
         self.count += card.get_count_value()
 
-    def get_action(self, player_hand, dealer_hand):
-        pass
-
     @override
     def get_bet(self):
         if self.count > 1:
