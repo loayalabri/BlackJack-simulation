@@ -22,6 +22,9 @@ class BlackjackGame:
         self.net_outcome = 0
 
     def deal_init_cards(self):
+        if self.shoe.penetration():
+            self.shoe.reset()
+            self.strategy.reset_count()
         self.player_hand.clear()
         self.dealer_hand.clear()
         self.bet = self.strategy.get_bet()
