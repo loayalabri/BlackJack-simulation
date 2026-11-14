@@ -4,20 +4,15 @@ from hand import Hand, DealerHand
 from strategy import HitTill17Strategy, BasicStrategy, HighLowStrategy
  
 class BlackjackGame:
-    def __init__(self, num_decks=1, hit_on_soft_17=True, strategy="Basic"):
-        assert strategy in ["HitTill17", "Basic", "Counting"], f"Invalid strategy. {strategy}"
+    def __init__(self, num_decks=1, hit_on_soft_17=True, strategy_name="Basic"):
+        assert strategy_name in ["HitTill17", "Basic", "Counting"], f"Invalid strategy. {strategy_name}"
         self.num_decks = num_decks
         self.shoe = Shoe(num_decks)
         self.dealer_behaviour = "HitOnSoft17" if hit_on_soft_17 else "StandOnSoft17"
-        self.strategy_name = strategy   
+        self.strategy_name = strategy_name   
         self.player_hand = Hand()
         self.dealer_hand = DealerHand(hit_on_soft_17)
-        if strategy == "HitTill17":
-            self.strategy = HitTill17Strategy()
-        elif strategy == "Basic":
-            self.strategy = BasicStrategy()
-        else:
-            self.strategy = HighLowStrategy()
+        self.set_strategy(strategy_name)
         self.bet = 0
         self.net_outcome = 0
 
@@ -117,13 +112,13 @@ class BlackjackGame:
         self.num_decks = shoe.num_decks
         self.shoe = shoe
 
-    def set_strategy(self, strategy):
-        assert strategy in ["HitTill17", "Basic", "Counting"], f"Invalid strategy. {strategy}"
+    def set_strategy(self, strategy_name: str):
+        assert strategy_name in ["HitTill17", "Basic", "Counting"], f"Invalid strategy. {strategy_name}"
 
-        self.strategy_name = strategy
-        if strategy == "HitTill17":
+        self.strategy_name = strategy_name
+        if strategy_name == "HitTill17":
             self.strategy = HitTill17Strategy()
-        elif strategy == "Basic":
+        elif strategy_name == "Basic":
             self.strategy = BasicStrategy()
         else:
             self.strategy = HighLowStrategy()
