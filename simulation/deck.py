@@ -22,6 +22,7 @@ class Shoe():
         return 1 - len(self.cards) / (self.num_decks * 52)
 
     def need_reshuffle(self, threshold: float = 0.75):
+        print(self.penetration())
         return self.penetration() >= threshold
 
     def reset(self):
