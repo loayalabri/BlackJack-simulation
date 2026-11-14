@@ -28,7 +28,7 @@ class BlackjackGame:
         self.player_hand.clear()
         self.dealer_hand.clear()
         self.bet = self.strategy.get_bet()
-        self.net_outcome = 0
+        # self.net_outcome = 0
         
         self.deal_to_hand(self.player_hand)
         self.deal_to_hand(self.dealer_hand)
@@ -50,14 +50,14 @@ class BlackjackGame:
             return self.get_results("Tie")
         
         elif self.player_hand.is_blackjack():
-            self.net_outcome = 1.5 * self.bet
+            self.net_outcome += 1.5 * self.bet
             print("Player wins with blackjack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
             return self.get_results("Win")
         
         elif self.dealer_hand.is_blackjack():
-            self.net_outcome = - self.bet
+            self.net_outcome -= self.bet
             print("Dealer wins with blackjack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
@@ -66,7 +66,7 @@ class BlackjackGame:
         while self.strategy.get_action(self.player_hand, self.dealer_hand) == 'Hit':
             self.deal_to_hand(self.player_hand)
             if self.player_hand.is_busted():
-                self.net_outcome =  - self.bet
+                self.net_outcome -= self.bet
                 print("Player Busted!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
@@ -76,28 +76,28 @@ class BlackjackGame:
         while self.dealer_hand.should_hit():
             self.deal_to_hand(self.dealer_hand)
             if self.dealer_hand.is_busted():
-                self.net_outcome = self.bet
+                self.net_outcome += self.bet
                 print("Dealer busted, player wins!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
                 return self.get_results("Win")
 
         if self.player_hand.get_value() > self.dealer_hand.get_value():
-            self.net_outcome = self.bet
+            self.net_outcome += self.bet
             print("Player Wins with value!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
             return self.get_results("Win")
         
         elif self.player_hand.get_value() == self.dealer_hand.get_value():
-            self.net_outcome = 0
+            self.net_outcome += 0
             print("Tie")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
             return self.get_results("Tie")
         
         else:
-            self.net_outcome = - self.bet
+            self.net_outcome -= self.bet
             print("Player Losses with value!!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
