@@ -15,6 +15,7 @@ class BlackjackGame:
         self.set_strategy(strategy_name)
         self.bet = 0
         self.net_outcome = 0
+        self.round_outcome = 0
 
     def deal_init_cards(self):
         if self.shoe.need_reshuffle():
@@ -23,7 +24,7 @@ class BlackjackGame:
         self.player_hand.clear()
         self.dealer_hand.clear()
         self.bet = self.strategy.get_bet()
-        # self.net_outcome = 0
+        self.round_outcome = 0
         
         self.deal_to_hand(self.player_hand)
         self.deal_to_hand(self.dealer_hand)
@@ -42,29 +43,36 @@ class BlackjackGame:
             print("Tie! BlackJack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
+            self.strategy.update_count(self.dealer_hand.get_cards()[1])
             return self.get_results("Tie")
         
         elif self.player_hand.is_blackjack():
             self.net_outcome += 1.5 * self.bet
+            self.round_outcome = 1.5 * self.bet
             print("Player wins with blackjack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
+            self.strategy.update_count(self.dealer_hand.get_cards()[1])
             return self.get_results("Win")
         
         elif self.dealer_hand.is_blackjack():
             self.net_outcome -= self.bet
+            self.round_outcome = - self.bet
             print("Dealer wins with blackjack!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
+            self.strategy.update_count(self.dealer_hand.get_cards()[1])
             return self.get_results("Loss")
 
         while self.strategy.get_action(self.player_hand, self.dealer_hand) == 'Hit':
             self.deal_to_hand(self.player_hand)
             if self.player_hand.is_busted():
                 self.net_outcome -= self.bet
+                self.round_outcome = - self.bet
                 print("Player Busted!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
+                self.strategy.update_count(self.dealer_hand.get_cards()[1])
                 return self.get_results("Loss")
             
         self.strategy.update_count(self.dealer_hand.get_cards()[1])
@@ -72,6 +80,7 @@ class BlackjackGame:
             self.deal_to_hand(self.dealer_hand)
             if self.dealer_hand.is_busted():
                 self.net_outcome += self.bet
+                self.round_outcome = self.bet
                 print("Dealer busted, player wins!")
                 print(f"PLAYER HAND: {self.player_hand}")
                 print(f"DEALER HAND: {self.dealer_hand}")
@@ -79,6 +88,7 @@ class BlackjackGame:
 
         if self.player_hand.get_value() > self.dealer_hand.get_value():
             self.net_outcome += self.bet
+            self.round_outcome = self.bet
             print("Player Wins with value!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
@@ -86,6 +96,7 @@ class BlackjackGame:
         
         elif self.player_hand.get_value() == self.dealer_hand.get_value():
             self.net_outcome += 0
+            self.round_outcome = 0
             print("Tie")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
@@ -93,6 +104,7 @@ class BlackjackGame:
         
         else:
             self.net_outcome -= self.bet
+            self.round_outcome = - self.bet
             print("Player Losses with value!!")
             print(f"PLAYER HAND: {self.player_hand}")
             print(f"DEALER HAND: {self.dealer_hand}")
@@ -104,11 +116,13 @@ class BlackjackGame:
                 "strategy": self.strategy_name,
                 "dealer_bahaviour": self. dealer_behaviour,
                 "bet": self.bet,
-                "net_outcome": self.net_outcome,
+                "round_outcome": self.round_outcome,
+                "cumilative_outcome": self.net_outcome,
                 "outcome": outcome
                 }
 
     def set_shoe(self, shoe: Shoe):
+        self.strategy.reset_count()
         self.num_decks = shoe.num_decks
         self.shoe = shoe
 
