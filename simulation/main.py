@@ -1,34 +1,10 @@
-from deck import Shoe
-from strategy import BasicStrategy, HitTill17Strategy
-from hand import Hand, DealerHand
-from blackjack_game import BlackjackGame
+
+from pathlib import Path
+from generate_samples import generate_save_data
+
+
 
 if __name__ == "__main__":
-   bj_game = BlackjackGame(num_decks=1, hit_on_soft_17=True, strategy_name="Counting")
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
-   bj_game.deal_init_cards()
-   profit = bj_game.play_turn()
-   print(profit)
+    file_path =  Path(__file__).resolve().parent.parent / "Data/sample1.csv"
+    print(file_path)
+    generate_save_data(file_path, seed=200)

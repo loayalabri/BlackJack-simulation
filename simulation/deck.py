@@ -1,5 +1,6 @@
-from random import shuffle
+import random
 from card import Card
+
 class Shoe():
     """
     Can be initialized with multiple decks.
@@ -7,8 +8,9 @@ class Shoe():
     """
     RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
     SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-    def __init__(self, num_decks=1):
+    def __init__(self, num_decks=1, seed=None):
         self.num_decks = num_decks
+        self.rng = random.Random(seed)
         self.cards = []
         self.reset()
         assert len(self.cards) == 52 * num_decks, "Incorrect number of cards in the deck"
@@ -35,7 +37,7 @@ class Shoe():
         self.shuffle()
 
     def shuffle(self):
-            shuffle(self.cards)
+            self.rng.shuffle(self.cards)
 
     def __len__(self):
         return len(self.cards)
