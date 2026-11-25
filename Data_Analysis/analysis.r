@@ -13,6 +13,7 @@ data_summary <- data %>% group_by(
     .groups = "drop"
 )
 
+data_summary$ROI <- (data_summary$cumilative_outcome / data_summary$total_bet) * 100
 write.csv(data_summary, "Data/firs_run_summary.csv", row.names=FALSE)
 
 print(head(data_summary))
