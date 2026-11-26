@@ -28,7 +28,8 @@ def generate_save_data(path: str, seed=None, reps=100, hands=100):
             for strat in strategies:
                 for num_deck in num_decks:
                     for behave in dealer_behaviour:
-                        game = BlackjackGame(num_decks=num_deck, hit_on_soft_17=behave, strategy_name=strat, seed=seed)
+                        game = BlackjackGame(num_decks=num_deck, hit_on_soft_17=behave, 
+                                             strategy_name=strat, seed=replicate)
                         for hand in range(1, hands + 1):     
                             game.deal_init_cards()
                             result = game.play_turn()
