@@ -1,6 +1,13 @@
 from abc import ABC,  abstractmethod
 
-from overrides import override
+try:
+    from typing import override
+except ImportError:
+    try:
+        from overrides import override
+    except ImportError:
+        def override(f):
+            return f
 from hand import Hand, DealerHand
 from card import Card
 
