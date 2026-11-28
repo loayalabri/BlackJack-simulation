@@ -28,7 +28,7 @@ class Shoe():
         return self.penetration() >= threshold
 
     def reset(self):
-        print("Reshufling ...")
+        # self.cards reset and shuffled
         self.cards = []
         for _ in range(self.num_decks):
             for rank in self.RANKS:

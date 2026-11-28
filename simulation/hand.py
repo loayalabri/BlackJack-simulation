@@ -1,4 +1,11 @@
-from typing import override
+try:
+    from typing import override
+except ImportError:
+    try:
+        from overrides import override
+    except ImportError:
+        def override(f):
+            return f
 
 from card import Card
 
